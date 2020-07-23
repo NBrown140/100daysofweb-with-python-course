@@ -24,13 +24,23 @@ class Animal(types.Type):
 # API Methods
 
 def list_animals() -> List[Animal]:
-    [Animal(animal[1]) for animal in sorted(animals.items())]
+    return [Animal(animal[1]) for animal in sorted(animals.items())]
+
 
 def create_animal(animal: Animal) -> JSONResponse:
-    pass
+    animal_id = max(animals.keys()) + 1
+    animal.id = animal_id
+    animals[animal_id] = animal
+    return JSONResponse(Animal(animal), status_code=201)
+
 
 def get_animal(animal_id: int) -> JSONResponse:
-    pass
+    animal = animals.get(animal_id)
+    if not animal:
+        error = {'error': ANIMAL_NOT_FOUND}
+        return JSONResponse(error, status_code=404)
+    return JSONResponse(Animal(animal), status_code=200)
+
 
 def update_animal(animal_id: int) -> JSONResponse:
     pass
